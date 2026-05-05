@@ -62,3 +62,94 @@ test('login test', async ({ request }) => {
   console.log('response body:', responseBody)
   expect(response.status()).toBe(StatusCodes.UNAUTHORIZED)
 })
+
+test('with correct username and password get response code 200', async ({ request }) => {
+  const queryParams = {
+    username: 'test',
+    password: 'test',
+  }
+
+  const response = await request.get('https://backend.tallinn-learning.ee/test-orders/auth', {
+    params: queryParams,
+  })
+
+  expect(response.status()).toBe(StatusCodes.OK)
+})
+
+test('with missing username and password get response code 500', async ({ request }) => {
+  const queryParams = {
+    username: '',
+    password: '',
+  }
+
+  const response = await request.get('https://backend.tallinn-learning.ee/test-orders/auth', {
+    params: queryParams,
+  })
+  // Check if the response status is 500
+  expect(response.status()).toBe(StatusCodes.INTERNAL_SERVER_ERROR)
+})
+
+test('delete order with id 8 and get response code 204', async ({ request }) => {
+  const apiKey = '1234567891234567'
+  const response = await request.delete('https://backend.tallinn-learning.ee/test-orders/8', {
+    headers: {
+      api_key: apiKey,
+    }
+  })
+  // Check if the response status is 204
+  expect(response.status()).toBe(StatusCodes.NO_CONTENT)
+})
+
+test('delete order with invalid apy key and get response code 401', async ({ request }) => {
+  const apiKey = '123456789123456'
+  const response = await request.delete('https://backend.tallinn-learning.ee/test-orders/8', {
+    headers: {
+      api_key: apiKey,
+    },
+  })
+  // Check if the response status is 401
+  expect(response.status()).toBe(StatusCodes.UNAUTHORIZED)
+})
+
+test('put order with correct data should receive code 200', async ({ request }) => {
+  const requestBody = {
+    status: 'OPEN',
+    courierId: 0,
+    customerName: 'Maikel',
+    customerPhone: 'Nait',
+    comment: 'string',
+    id: 7,
+  }
+
+  const response = await request.put('https://backend.tallinn-learning.ee/test-orders/7', {
+    headers: {
+      api_key: '1234567891234567',
+    },
+    data: requestBody,
+  })
+  // Check if the response status is 200
+  expect(response.status()).toBe(StatusCodes.OK)
+})
+
+test('put order with incorrect api key should receive code 401', async ({ request }) => {
+  const requestBody = {
+    status: 'OPEN',
+    courierId: 0,
+    customerName: 'Maikel',
+    customerPhone: 'Nait',
+    comment: 'string',
+    id: 7,
+  }
+
+  const response = await request.put('https://backend.tallinn-learning.ee/test-orders/7', {
+    headers: {
+      api_key: '123456789',
+    },
+    data: requestBody,
+  })
+  // Check if the response status is 401
+  expect(response.status()).toBe(StatusCodes.UNAUTHORIZED)
+})
+
+
+
