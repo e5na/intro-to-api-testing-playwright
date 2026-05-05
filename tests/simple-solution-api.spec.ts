@@ -94,7 +94,7 @@ test('delete order with id 8 and get response code 204', async ({ request }) => 
   const response = await request.delete('https://backend.tallinn-learning.ee/test-orders/8', {
     headers: {
       api_key: apiKey,
-    }
+    },
   })
   // Check if the response status is 204
   expect(response.status()).toBe(StatusCodes.NO_CONTENT)
@@ -150,6 +150,3 @@ test('put order with incorrect api key should receive code 401', async ({ reques
   // Check if the response status is 401
   expect(response.status()).toBe(StatusCodes.UNAUTHORIZED)
 })
-
-
-
